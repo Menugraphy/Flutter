@@ -1,0 +1,73 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:auth_buttons/auth_buttons.dart';
+
+class TextExample extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ScreenUtilInit(
+      designSize: Size(360, 690),
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'ScreenUtil Example',
+          theme: ThemeData.light(),
+          home: Scaffold(
+            appBar: AppBar(
+            ),
+            body: Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0.w),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(height: 100.h),
+                    Text(
+                      'Menugraphy',
+                      style: TextStyle(
+                        fontSize: 48.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 200.h),
+                    SizedBox(
+                      width: 300.w,
+                      height: 50.h,
+                      child: AppleAuthButton(
+                        onPressed: () {
+                          print('Apple Auth Button pressed');
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 20.h),
+                    SizedBox(
+                      width: 300.w,
+                      height: 50.h,
+                      child: GoogleAuthButton(
+                        onPressed: () {
+                          print("Google Auth Button Pressed");
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 20.h),
+                    TextButton(
+                      onPressed: () {
+                        print("Continue as Guest Pressed");
+                      },
+                      child: Text(
+                        'Continue as Guest',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
