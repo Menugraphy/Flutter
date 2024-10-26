@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:menugraphy/Constant/CustomColors.dart';
+import 'package:menugraphy/View/FoodSignificant.dart';
 
 class LoginView extends StatelessWidget {
  const LoginView({Key? key}) : super(key: key);
@@ -93,12 +94,19 @@ class LoginView extends StatelessWidget {
                    ),
                  ),
                ),
-               TextButton(  // child: 제거하고 직접 Column의 children에 추가
+               TextButton( 
                 style: TextButton.styleFrom(
                   textStyle: TextStyle(fontSize: 16.sp),  
                   foregroundColor: CustomColorsExtension.text_gray01
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FoodSignificant(), 
+                      ),
+                    );
+                },
                 child: const Text('Continue as guest'),
               ),
               const Spacer(),

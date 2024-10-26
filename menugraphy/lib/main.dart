@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:menugraphy/View/FoodSignificant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:menugraphy/View/Login.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: const FoodSignificant(),
+          home: const LoginView(),
         );
       },
     );
