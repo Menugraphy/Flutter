@@ -29,4 +29,27 @@ flutter:
 
   uses-material-design: true
 
+  assets: 
+  - assets/images/
+
+  fonts:
+   - family: AppleSDGothicNeoB00
+     fonts:
+       - asset: assets/fonts/AppleSDGothicNeoB00.ttf
+   - family: AppleSDGothicNeoM00
+     fonts:
+       - asset: assets/fonts/AppleSDGothicNeoM00.ttf
+   - family: AppleSDGothicNeoEB00
+     fonts:
+       - asset: assets/fonts/AppleSDGothicNeoEB00.ttf
+   - family: AppleSDGothicNeoH00
+     fonts:
+       - asset: assets/fonts/AppleSDGothicNeoH00.ttf
+   - family: AppleSDGothicNeoR00
+     fonts:
+       - asset: assets/fonts/AppleSDGothicNeoR00.ttf
+   - family: AppleSDGothicNeoSB00
+     fonts:
+       - asset: assets/fonts/AppleSDGothicNeoSB00.ttf
+
 

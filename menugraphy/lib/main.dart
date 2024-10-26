@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:menugraphy/View/Login';
+import 'package:menugraphy/View/FoodSignificant.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: TextExample(), 
+    return ScreenUtilInit(
+      designSize: const Size(390, 857),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: const FoodSignificant(),
+        );
+      },
     );
   }
 }
