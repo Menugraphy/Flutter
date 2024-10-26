@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:menugraphy/Data/FoodData.dart';
 import 'package:menugraphy/Constant/CustomColors.dart';
 import 'package:menugraphy/Model/SelectionItem.dart';
+import 'package:menugraphy/View/FoodSignificantComplete.dart';
 
 class FoodSignificant extends StatefulWidget {
   const FoodSignificant({Key? key}) : super(key: key);
@@ -50,7 +51,6 @@ class _FoodSignificantState extends State<FoodSignificant> {
           // 메인 콘텐츠
           SafeArea(
             child: SingleChildScrollView(
-              // 하단 버튼 공간만큼 패딩 추가
               padding: EdgeInsets.only(bottom: 80.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +99,6 @@ class _FoodSignificantState extends State<FoodSignificant> {
             child: Container(
               padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
-                // 그라데이션으로 자연스러운 투명 효과 추가
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -115,13 +114,12 @@ class _FoodSignificantState extends State<FoodSignificant> {
                 top: false,
                 child: ElevatedButton(
                   onPressed: () {
-                    // TODO: 다음 화면으로 이동하는 로직 추가
-                    // Navigator.push(
-                    //   context,
-                    //   // MaterialPageRoute(
-                    //   //    // 다음 화면 위젯
-                    //   // ),
-                    // );
+                     Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FoodSignificantComplete(), 
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: CustomColorsExtension.mainColor01,
