@@ -1,6 +1,6 @@
 import "package:menugraphy/Model/SelectionItem.dart";
 
-class FoodData {
+class FoodSignificantData {
   static final List<SelectionItemModel> items = [
     // Vegan items
     SelectionItemModel(

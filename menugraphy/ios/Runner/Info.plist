@@ -12,6 +12,12 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to camera for taking photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>사진을 선택하여 메뉴 이미지로 사용하기 위해 갤러리 접근 권한이 필요합니다.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>메뉴 사진을 촬영하기 위해 카메라 접근 권한이 필요합니다.</string>
 	<key>CFBundleName</key>
 	<string>menugraphy</string>
 	<key>CFBundlePackageType</key>

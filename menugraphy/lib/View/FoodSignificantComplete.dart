@@ -1,7 +1,8 @@
-// food_significant_complete.dart
 import 'package:flutter/material.dart';
 import 'package:menugraphy/Constant/CustomColors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:async';
+import 'package:menugraphy/View/CustomCamera.dart'; 
 
 class FoodSignificantComplete extends StatefulWidget {
   const FoodSignificantComplete({Key? key}) : super(key: key);
@@ -11,6 +12,30 @@ class FoodSignificantComplete extends StatefulWidget {
 }
 
 class _FoodSignificantState extends State<FoodSignificantComplete> {
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    // 3초 후 자동 이동
+    _timer = Timer(const Duration(seconds: 3), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CustomCameraView(),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // 타이머 취소
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +45,10 @@ class _FoodSignificantState extends State<FoodSignificantComplete> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios,
               color: CustomColorsExtension.mainColor01),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            _timer.cancel(); // 뒤로 가기 시 타이머 취소
+            Navigator.pop(context);
+          },
         ),
       ),
       body: Column(

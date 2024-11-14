@@ -1,10 +1,11 @@
 // food_significant.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:menugraphy/Data/FoodData.dart';
+import 'package:menugraphy/Data/FoodSignificantData.dart';
 import 'package:menugraphy/Constant/CustomColors.dart';
 import 'package:menugraphy/Model/SelectionItem.dart';
-import 'package:menugraphy/View/FoodSignificantComplete.dart';
+import 'package:menugraphy/View/FoodPreference.dart';
+import 'package:menugraphy/View/Component/SelectionItemWidget.dart';
 
 class FoodSignificant extends StatefulWidget {
   const FoodSignificant({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class _FoodSignificantState extends State<FoodSignificant> {
   @override
   void initState() {
     super.initState();
-    items = FoodData.items;
+    items = FoodSignificantData.items;
   }
 
   @override
@@ -48,7 +49,6 @@ class _FoodSignificantState extends State<FoodSignificant> {
       ),
       body: Stack(
         children: [
-          // 메인 콘텐츠
           SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.only(bottom: 80.h),
@@ -91,7 +91,6 @@ class _FoodSignificantState extends State<FoodSignificant> {
               ),
             ),
           ),
-          // 고정된 하단 버튼
           Positioned(
             bottom: 0,
             left: 0,
@@ -114,10 +113,10 @@ class _FoodSignificantState extends State<FoodSignificant> {
                 top: false,
                 child: ElevatedButton(
                   onPressed: () {
-                     Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FoodSignificantComplete(), 
+                        builder: (context) => FoodPreference(), 
                       ),
                     );
                   },
@@ -163,7 +162,17 @@ class _FoodSignificantState extends State<FoodSignificant> {
             .where((item) => item.category == category)
             .map((item) => Column(
                   children: [
-                    _buildSelectionItem(item),
+                    SelectionItemWidget(
+                      item: item,
+                      onTap: () {
+                        setState(() {
+                          for (var i in items.where((i) => i.category == item.category)) {
+                            i.isSelected = false;
+                          }
+                          item.isSelected = !item.isSelected;
+                        });
+                      },
+                    ),
                     SizedBox(height: 10.h),
                   ],
                 ))
@@ -173,46 +182,5 @@ class _FoodSignificantState extends State<FoodSignificant> {
     }
 
     return sections;
-  }
-
-  Widget _buildSelectionItem(SelectionItemModel item) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          for (var i in items.where((i) => i.category == item.category)) {
-            i.isSelected = false;
-          }
-          item.isSelected = !item.isSelected;
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: item.isSelected
-                ? CustomColorsExtension.mainColor01
-                : CustomColorsExtension.line_gray,
-            width: item.isSelected ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          children: [
-            Text(
-              item.emoji,
-              style: TextStyle(fontSize: 24.sp),
-            ),
-            SizedBox(width: 12.w),
-            Text(
-              item.text,
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

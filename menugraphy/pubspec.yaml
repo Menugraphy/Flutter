@@ -14,8 +14,10 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  auth_buttons: ^3.0.3
   flutter_screenutil: ^5.9.3
+  camera: ^0.10.5+5
+  image_picker: ^1.1.2
+  flutter_tts: ^3.8.5
   
 
 dev_dependencies:
