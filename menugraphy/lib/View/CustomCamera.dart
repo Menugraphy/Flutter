@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:menugraphy/Constant/CustomColors.dart';
 import 'CameraPreview.dart';
 import 'package:image_picker/image_picker.dart';
+import 'MyPage.dart';
 
 class CustomCameraView extends StatefulWidget {
   const CustomCameraView({Key? key}) : super(key: key);
@@ -102,7 +103,14 @@ class _CustomCameraViewState extends State<CustomCameraView> {
                     ),
                     IconButton(
                       icon: Icon(Icons.person_outline, color: Colors.white),
-                      onPressed: () {},
+                      onPressed: (){
+                         Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyPage(), 
+                      ),
+                    );
+                      },
                     ),
                   ],
                 ),

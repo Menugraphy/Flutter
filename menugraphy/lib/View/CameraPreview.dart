@@ -19,10 +19,20 @@ class CameraPreviewView extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            Center(
-              child: Image.asset(
-                'assets/images/ocr_result.jpg',
-                fit: BoxFit.contain,
+            Positioned.fill(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Center(
+                    child: Container(
+                      width: constraints.maxWidth,
+                      height: constraints.maxHeight,
+                      child: Image.asset(
+                        'assets/images/ocr_result.jpg',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             Positioned(
@@ -62,18 +72,18 @@ class CameraPreviewView extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   try {
-                    print("Attempting navigation..."); // 디버깅용 출력
+                    print("Attempting navigation...");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => MenuScreen(),
                       ),
                     )
-                        .then((_) => print("Navigation completed")) // 성공 시 출력
+                        .then((_) => print("Navigation completed"))
                         .catchError((error) =>
-                            print("Navigation error: $error")); // 에러 발생 시 출력
+                            print("Navigation error: $error"));
                   } catch (e) {
-                    print("Error in onPressed: $e"); // try-catch에서 잡히는 에러 출력
+                    print("Error in onPressed: $e");
                   }
                 },
                 style: ElevatedButton.styleFrom(

@@ -16,9 +16,8 @@ class FoodPreference extends StatefulWidget {
 
 class _FoodPreferenceState extends State<FoodPreference> {
   late List<SelectionItemModel> items;
-  late String selectedCategory; 
-  Map<String, bool> categoryAllSelected = {}; 
-
+  late String selectedCategory;
+  Map<String, bool> categoryAllSelected = {};
 
   @override
   void initState() {
@@ -72,23 +71,30 @@ class _FoodPreferenceState extends State<FoodPreference> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 30.h),
-                        Text(
-                          'Food Preferences',
-                          style: TextStyle(
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.bold,
-                            color: CustomColorsExtension.mainColor01,
+                        Center(
+                          // 제목을 Center 위젯으로 감싸기
+                          child: Column(
+                            children: [
+                              Text(
+                                'Food Preferences',
+                                style: TextStyle(
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: CustomColorsExtension.mainColor01,
+                                ),
+                              ),
+                              Text(
+                                'Select Food you can’t eat',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  color: CustomColorsExtension.line_gray,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Text(
-                          'Select Food you can’t eat',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: CustomColorsExtension.line_gray,
-                          ),
-                        ),
-                         SizedBox(height: 16.h),
-                        _buildCategoryFilter(), 
+                        SizedBox(height: 16.h),
+                        _buildCategoryFilter(),
                         SizedBox(height: 30.h),
                         ...buildSections(),
                       ],
@@ -121,10 +127,10 @@ class _FoodPreferenceState extends State<FoodPreference> {
                 top: false,
                 child: ElevatedButton(
                   onPressed: () {
-                     Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FoodSignificantComplete(), 
+                        builder: (context) => FoodSignificantComplete(),
                       ),
                     );
                   },
@@ -169,10 +175,12 @@ class _FoodPreferenceState extends State<FoodPreference> {
           onTap: () {
             setState(() {
               // 전체 선택 상태 토글
-              categoryAllSelected[category] = !(categoryAllSelected[category] ?? false);
-              
+              categoryAllSelected[category] =
+                  !(categoryAllSelected[category] ?? false);
+
               // 해당 카테고리의 모든 아이템 선택/해제
-              for (var item in items.where((item) => item.category == category)) {
+              for (var item
+                  in items.where((item) => item.category == category)) {
                 item.isSelected = categoryAllSelected[category]!;
               }
             });
@@ -186,8 +194,8 @@ class _FoodPreferenceState extends State<FoodPreference> {
                 width: 1.5,
               ),
               borderRadius: BorderRadius.circular(4),
-              color: categoryAllSelected[category] == true 
-                  ? CustomColorsExtension.mainColor01 
+              color: categoryAllSelected[category] == true
+                  ? CustomColorsExtension.mainColor01
                   : Colors.white,
             ),
             child: categoryAllSelected[category] == true
@@ -205,7 +213,8 @@ class _FoodPreferenceState extends State<FoodPreference> {
 
   List<Widget> buildSections() {
     // 선택된 카테고리만 보여주도록 수정
-    final filteredItems = items.where((item) => item.category == selectedCategory);
+    final filteredItems =
+        items.where((item) => item.category == selectedCategory);
     List<Widget> sections = [];
 
     sections.addAll([
@@ -233,7 +242,7 @@ class _FoodPreferenceState extends State<FoodPreference> {
                     onTap: () {
                       setState(() {
                         item.isSelected = !item.isSelected;
-                        
+
                         // 아이템 선택 상태가 변경될 때 전체 선택 상태 업데이트
                         bool allSelected = items
                             .where((i) => i.category == selectedCategory)
@@ -254,7 +263,7 @@ class _FoodPreferenceState extends State<FoodPreference> {
 
   Widget _buildCategoryFilter() {
     final categories = items.map((item) => item.category).toSet().toList();
-    
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -301,4 +310,3 @@ class _FoodPreferenceState extends State<FoodPreference> {
     );
   }
 }
-  

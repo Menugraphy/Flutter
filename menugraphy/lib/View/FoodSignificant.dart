@@ -67,19 +67,25 @@ class _FoodSignificantState extends State<FoodSignificant> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 30.h),
-                        Text(
-                          'Food Significant',
-                          style: TextStyle(
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.bold,
-                            color: CustomColorsExtension.mainColor01,
-                          ),
-                        ),
-                        Text(
-                          'Select your religion or vegan or allergy',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: CustomColorsExtension.line_gray,
+                         Center(  // 제목을 Center 위젯으로 감싸기
+                          child: Column(
+                            children: [
+                              Text(
+                                'Food Significant',
+                                style: TextStyle(
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: CustomColorsExtension.mainColor01,
+                                ),
+                              ),
+                              Text(
+                                'Select your religion or vegan or allergy',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  color: CustomColorsExtension.line_gray,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         SizedBox(height: 30.h),

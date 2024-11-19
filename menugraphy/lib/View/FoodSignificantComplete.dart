@@ -18,7 +18,7 @@ class _FoodSignificantState extends State<FoodSignificantComplete> {
   void initState() {
     super.initState();
     // 3초 후 자동 이동
-    _timer = Timer(const Duration(seconds: 3), () {
+    _timer = Timer(const Duration(seconds: 2), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,

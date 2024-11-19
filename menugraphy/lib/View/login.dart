@@ -21,30 +21,13 @@ class LoginView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-               SizedBox(height: 100.h),
-               Text(
-                 'Menugraphy',
-                 style: TextStyle(
-                   fontFamily: 'AppleSDGothicNeoH00',
-                   fontSize: 38.sp,
-                   color: CustomColorsExtension.mainColor01,
-                 ),
-               ),
-               Text(
-                 'For more convenient ordering',
-                 style: TextStyle(
-                   fontFamily: 'AppleSDGothicNeoM00',
-                   fontSize: 18.sp,
-                   color: CustomColorsExtension.text_gray02,
-                 ),
-               ),
-               SizedBox(height: 80.h),  // 'For more convenient ordering'과 이미지 사이 간격
+               SizedBox(height: 180.h),  // 'For more convenient ordering'과 이미지 사이 간격
                Image.asset(
-                 'assets/images/icon_main.png',
-                 width: 130.w,
-                 height: 250.h,
+                 'assets/images/logo.png',
+                 width: 300.w,
+                 height: 260.h,
                ),
-               SizedBox(height: 104.h),  // 이미지와 'Sign in with Apple' 버튼 사이 간격
+               SizedBox(height: 180.h),  // 이미지와 'Sign in with Apple' 버튼 사이 간격
                Container(
                  height: 60.h,
                  padding: EdgeInsets.symmetric(horizontal: 43.w),
