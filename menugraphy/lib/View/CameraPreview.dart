@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,8 +27,8 @@ class CameraPreviewView extends StatelessWidget {
                     child: Container(
                       width: constraints.maxWidth,
                       height: constraints.maxHeight,
-                      child: Image.asset(
-                        'assets/images/ocr_result.jpg',
+                      child: Image.file(
+                        File(image.path),
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -108,36 +109,4 @@ class CameraPreviewView extends StatelessWidget {
       ),
     );
   }
-}
-
-class GridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.5)
-      ..strokeWidth = 1;
-
-    final verticalSpacing = size.width / 3;
-    for (var i = 1; i < 3; i++) {
-      final x = verticalSpacing * i;
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        paint,
-      );
-    }
-
-    final horizontalSpacing = size.height / 3;
-    for (var i = 1; i < 3; i++) {
-      final y = horizontalSpacing * i;
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
