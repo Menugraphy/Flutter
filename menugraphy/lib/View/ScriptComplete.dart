@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:menugraphy/Data/ScriptData.dart';
+import 'package:menugraphy/Model/Script.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:menugraphy/Constant/CustomColors.dart';
 import 'CustomCamera.dart';

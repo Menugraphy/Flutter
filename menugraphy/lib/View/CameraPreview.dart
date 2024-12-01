@@ -1,16 +1,42 @@
+import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:menugraphy/Constant/CustomColors.dart';
 import 'package:menugraphy/View/MenuScreen.dart';
 
-class CameraPreviewView extends StatelessWidget {
+class CameraPreviewView extends StatefulWidget {
   final XFile image;
+  final String? processedImageUrl;
+  final int? imageId;
 
   const CameraPreviewView({
     Key? key,
     required this.image,
+    this.processedImageUrl,
+    this.imageId,
   }) : super(key: key);
+
+  @override
+  State<CameraPreviewView> createState() => _CameraPreviewViewState();
+}
+
+class _CameraPreviewViewState extends State<CameraPreviewView> {
+  void _handleSubmit() {
+    if (widget.imageId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('이미지 처리가 완료되지 않았습니다.')),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MenuScreen(imageId: widget.imageId!),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +52,67 @@ class CameraPreviewView extends StatelessWidget {
                     child: Container(
                       width: constraints.maxWidth,
                       height: constraints.maxHeight,
-                      child: Image.asset(
-                        'assets/images/ocr_result.jpg',
-                        fit: BoxFit.contain,
-                      ),
+                      child: widget.processedImageUrl != null
+                          ? Image.network(
+                              widget.processedImageUrl!,
+                              fit: BoxFit.contain,
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Center(
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        CircularProgressIndicator(
+                                          value: loadingProgress.expectedTotalBytes != null
+                                              ? loadingProgress.cumulativeBytesLoaded /
+                                                  loadingProgress.expectedTotalBytes!
+                                              : null,
+                                        ),
+                                        SizedBox(height: 16.h),
+                                        Text(
+                                          '잠시만 기다려주세요',
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                print('Error loading processed image: $error');
+                                print('Attempted URL: ${widget.processedImageUrl}');
+                                return Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(16.w),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.error_outline, color: Colors.white, size: 48.sp),
+                                        SizedBox(height: 16.h),
+                                        Text(
+                                          '이미지를 불러올 수 없습니다',
+                                          style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Image.file(
+                              File(widget.image.path),
+                              fit: BoxFit.contain,
+                            ),
                     ),
                   );
                 },
@@ -46,7 +129,7 @@ class CameraPreviewView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                      icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
                       onPressed: () => Navigator.pop(context),
                     ),
                     Text(
@@ -58,7 +141,7 @@ class CameraPreviewView extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.person_outline, color: Colors.white),
+                      icon: const Icon(Icons.person_outline, color: Colors.white),
                       onPressed: () {},
                     ),
                   ],
@@ -70,22 +153,7 @@ class CameraPreviewView extends StatelessWidget {
               left: 16.w,
               right: 16.w,
               child: ElevatedButton(
-                onPressed: () {
-                  try {
-                    print("Attempting navigation...");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MenuScreen(),
-                      ),
-                    )
-                        .then((_) => print("Navigation completed"))
-                        .catchError((error) =>
-                            print("Navigation error: $error"));
-                  } catch (e) {
-                    print("Error in onPressed: $e");
-                  }
-                },
+                onPressed: widget.processedImageUrl == null ? null : _handleSubmit,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: CustomColorsExtension.mainColor02,
                   minimumSize: Size(double.infinity, 50.h),
@@ -108,36 +176,4 @@ class CameraPreviewView extends StatelessWidget {
       ),
     );
   }
-}
-
-class GridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.5)
-      ..strokeWidth = 1;
-
-    final verticalSpacing = size.width / 3;
-    for (var i = 1; i < 3; i++) {
-      final x = verticalSpacing * i;
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        paint,
-      );
-    }
-
-    final horizontalSpacing = size.height / 3;
-    for (var i = 1; i < 3; i++) {
-      final y = horizontalSpacing * i;
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -1,22 +1,90 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:menugraphy/Constant/CustomColors.dart';
-import 'package:menugraphy/Data/MenuData.dart';
 import 'package:menugraphy/Model/Menu.dart';
+import 'package:menugraphy/Model/Script.dart';
+import 'package:menugraphy/Network/APIProvider.dart';
 import 'ScriptComplete.dart';
-import 'package:menugraphy/Data/ScriptData.dart';
 
 class MenuCheckView extends StatefulWidget {
+  final List<MenuItem> selectedItems;
+  final int menuBoardId;
+
+  const MenuCheckView({
+    Key? key,
+    required this.selectedItems,
+    required this.menuBoardId,
+  }) : super(key: key);
+
   @override
   _MenuCheckViewState createState() => _MenuCheckViewState();
 }
 
 class _MenuCheckViewState extends State<MenuCheckView> {
-  int get totalWon => MenuData.menuItems
-      .map((item) => item.priceWon * item.quantity)
+  final ApiProvider _apiProvider = ApiProvider();
+  bool _isLoading = false;
+
+  // 원화 총액 계산
+  int get totalPrice => widget.selectedItems
+      .map((item) => item.price * item.quantity)
       .fold(0, (prev, amount) => prev + amount);
 
-  double get totalUSD => (totalWon / 1385.0).toStringAsFixed(2).toDouble();
+  Future<void> _generateOrderScript() async {
+    if (widget.selectedItems.isEmpty || 
+        !widget.selectedItems.any((item) => item.quantity > 0)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select at least one item')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final menuOrderList = widget.selectedItems
+          .where((item) => item.quantity > 0)
+          .map((item) => {
+                'menuId': item.id,
+                'menuCount': item.quantity,
+              })
+          .toList();
+
+      final response = await _apiProvider.createOrderScript(
+        widget.menuBoardId,
+        menuOrderList,
+      );
+
+      if (response['status'] == 'success') {
+        final scriptData = ScriptData.fromJson(response['data']);
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ScriptCompleteView(
+                scriptData: scriptData,
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceAll('Exception: ', '')),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +93,16 @@ class _MenuCheckViewState extends State<MenuCheckView> {
         backgroundColor: Colors.white,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,
-              color: CustomColorsExtension.mainColor01),
+          icon: Icon(Icons.arrow_back_ios, color: CustomColorsExtension.mainColor01),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'MENU',
           style: TextStyle(
-              color: CustomColorsExtension.mainColor01,
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold),
+            color: CustomColorsExtension.mainColor01,
+            fontSize: 20.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         elevation: 0,
       ),
@@ -44,12 +112,9 @@ class _MenuCheckViewState extends State<MenuCheckView> {
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.all(6.w),
-              itemCount:
-                  MenuData.menuItems.where((item) => item.quantity > 0).length,
+              itemCount: widget.selectedItems.length,
               itemBuilder: (context, index) {
-                final item = MenuData.menuItems
-                    .where((item) => item.quantity > 0)
-                    .toList()[index];
+                final item = widget.selectedItems[index];
                 return _buildMenuItem(item);
               },
             ),
@@ -74,7 +139,7 @@ class _MenuCheckViewState extends State<MenuCheckView> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '$totalWon won',
+                          '${totalPrice}원',
                           style: TextStyle(
                             color: CustomColorsExtension.mainColor01,
                             fontSize: 16.sp,
@@ -82,7 +147,9 @@ class _MenuCheckViewState extends State<MenuCheckView> {
                           ),
                         ),
                         Text(
-                          '$totalUSD USD',
+                          widget.selectedItems.isNotEmpty 
+                              ? widget.selectedItems.first.localizedPrice 
+                              : "0.00 USD",
                           style: TextStyle(
                             color: CustomColorsExtension.text_gray01,
                             fontSize: 12.sp,
@@ -94,32 +161,7 @@ class _MenuCheckViewState extends State<MenuCheckView> {
                 ),
                 SizedBox(height: 16.h),
                 ElevatedButton(
-                  onPressed: () {
-                    // 주문된 아이템만 필터링
-                    final orderedItems = MenuData.menuItems
-                        .where((item) => item.quantity > 0)
-                        .toList();
-
-                    if (orderedItems.isNotEmpty) {
-                      final scriptData =
-                          ScriptDataProvider.generateScript(orderedItems);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ScriptCompleteView(
-                            scriptData: scriptData,
-                          ),
-                        ),
-                      );
-                    } else {
-                      // 주문된 아이템이 없는 경우 알림
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Please select at least one item'),
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: _isLoading ? null : _generateOrderScript,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: CustomColorsExtension.mainColor02,
                     minimumSize: Size(double.infinity, 50.h),
@@ -127,10 +169,19 @@ class _MenuCheckViewState extends State<MenuCheckView> {
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                   ),
-                  child: Text(
-                    'Generate Order Script',
-                    style: TextStyle(fontSize: 16.sp, color: Colors.white),
-                  ),
+                  child: _isLoading
+                      ? SizedBox(
+                          height: 20.h,
+                          width: 20.h,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : Text(
+                          'Generate Order Script',
+                          style: TextStyle(fontSize: 16.sp, color: Colors.white),
+                        ),
                 ),
               ],
             ),
@@ -147,6 +198,9 @@ class _MenuCheckViewState extends State<MenuCheckView> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8.r),
+        border: item.isAvoidanceFood 
+            ? Border.all(color: Colors.red.withOpacity(0.5), width: 2)
+            : null,
       ),
       child: Row(
         children: [
@@ -160,19 +214,24 @@ class _MenuCheckViewState extends State<MenuCheckView> {
     );
   }
 
-  // MenuScreen의 나머지 위젯 메서드들도 동일하게 사용
-  Widget _buildMenuImage(String image) {
+  Widget _buildMenuImage(String imageUrl) {
     return Container(
       width: 63.w,
       height: 63.w,
       decoration: BoxDecoration(
-        color: Colors.grey[200],
         borderRadius: BorderRadius.circular(8.r),
       ),
-      child: Center(
-        child: Text(
-          image,
-          style: TextStyle(fontSize: 20.sp),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8.r),
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              color: Colors.grey[200],
+              child: Icon(Icons.restaurant_menu, color: Colors.grey),
+            );
+          },
         ),
       ),
     );
@@ -183,12 +242,21 @@ class _MenuCheckViewState extends State<MenuCheckView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          item.EnglishName,
+          item.name,
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
+        if (item.isAvoidanceFood)
+          Text(
+            '⚠️ Contains avoided ingredients',
+            style: TextStyle(
+              fontSize: 10.sp,
+              color: Colors.red,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         SizedBox(height: 4.h),
         Container(
           width: 200.w,
@@ -211,13 +279,25 @@ class _MenuCheckViewState extends State<MenuCheckView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          '${item.priceWon} won (${item.priceUSD} USD)',
-          style: TextStyle(
-            fontSize: 12.sp,
-            color: CustomColorsExtension.mainColor01,
-            fontWeight: FontWeight.bold,
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${item.price}원',
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: CustomColorsExtension.mainColor01,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              item.localizedPrice,
+              style: TextStyle(
+                fontSize: 10.sp,
+                color: CustomColorsExtension.text_gray02,
+              ),
+            ),
+          ],
         ),
         _buildQuantityControls(item),
       ],
@@ -274,7 +354,6 @@ class _MenuCheckViewState extends State<MenuCheckView> {
         icon,
         size: 12.w,
         color: Colors.white,
-        weight: 700,
       ),
     );
   }

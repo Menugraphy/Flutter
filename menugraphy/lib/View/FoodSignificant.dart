@@ -29,11 +29,6 @@ class _FoodSignificantState extends State<FoodSignificant> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,
-              color: CustomColorsExtension.mainColor01),
-          onPressed: () => Navigator.pop(context),
-        ),
         actions: [
           TextButton(
             onPressed: () {},
