@@ -1,25 +1,34 @@
-// menu_model.dart
+// menu.dart
 class MenuItem {
-  final String KoreanName;
-  final String EnglishName;
+  final int id;
+  final String image;
+  final String name;
   final String description;
-  final int priceWon;
-  final double exchangeRate = 1385.0; // USD/KRW 환율
+  final int price;
+  final String localizedPrice;
+  final bool isAvoidanceFood;
   int quantity;
-  String image;
 
   MenuItem({
-    required this.KoreanName,
-    required this.EnglishName,
-    required this.description,
-    required this.priceWon,
+    required this.id,
     required this.image,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.localizedPrice,
+    required this.isAvoidanceFood,
     this.quantity = 0,
   });
 
-  double get priceUSD => (priceWon / exchangeRate).toStringAsFixed(2).toDouble();
-}
-
-extension StringToDouble on String {
-  double toDouble() => double.parse(this);
+  factory MenuItem.fromJson(Map<String, dynamic> json) {
+    return MenuItem(
+      id: json['id'] as int,
+      image: json['image'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String,
+      price: json['price'] as int,
+      localizedPrice: json['localizedPrice'] as String,
+      isAvoidanceFood: json['isAvoidanceFood'] as bool,
+    );
+  }
 }
